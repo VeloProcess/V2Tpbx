@@ -26,11 +26,11 @@ export default async function handler(req, res) {
         // Nota: A forma de autenticação pode variar. 'Authorization: Bearer' é comum.
         // Verifique a documentação da 55PBX se este método não funcionar.
         const audioResponse = await fetch(audioUrl, {
-            headers: {
-                // Assumindo que a autenticação é feita com um cabeçalho 'Authorization'
-                'Authorization': `Bearer ${apiKey}`
-            }
-        });
+    headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'
+    } // A chave de fecho do objeto 'headers' vem aqui.
+});
 
         if (!audioResponse.ok) {
             throw new Error(`Falha ao buscar o áudio do servidor 55PBX: ${audioResponse.statusText}`);
