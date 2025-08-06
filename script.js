@@ -7,7 +7,7 @@ const backendApiEndpoint = '/api';
 
 // ---> PASSO IMPORTANTE <---
 // Cole aqui o ID do Cliente que você criou na Google Cloud Platform.
-const GOOGLE_CLIENT_ID = 'COLE_O_SEU_CLIENT_ID_AQUI.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = '827325386401-ihcn9c4j2nntknpv65io2snt51oj2bpe.apps.googleusercontent.com';
 
 
 // =================================================================
