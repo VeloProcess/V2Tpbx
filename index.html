@@ -5,9 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Transcrição 55PBX</title>
     <link rel="stylesheet" href="styles.css">
+    
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
-    <div class="container">
+    
+    <div id="login-overlay">
+        <div class="card login-card">
+            <h1>Acesso ao Sistema de Transcrição</h1>
+            <p class="subtitle">Por favor, identifique-se com a sua conta Google autorizada.</p>
+            
+            <div id="g_id_onload"
+                 data-client_id="827325386401-ihcn9c4j2nntknpv65io2snt51oj2bpe.apps.googleusercontent.com"
+                 data-callback="handleCredentialResponse"
+                 data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin"
+                 data-type="standard"
+                 data-size="large"
+                 data-theme="outline"
+                 data-text="sign_in_with"
+                 data-shape="rectangular"
+                 data-logo_alignment="left">
+            </div>
+
+            <p id="login-error-message" class="error" style="display: none; margin-top: 20px; text-align: center;"></p>
+        </div>
+    </div>
+
+    <div class="container app-container" style="display: none;">
         <header>
             <h1>Sistema de Transcrição 55PBX</h1>
             <p>Busca automática na planilha e transcrição de áudio</p>
@@ -18,7 +44,6 @@
             <div class="card">
                 <h2>Consultar Transcrição</h2>
                 <p class="subtitle">Insira a data e o nome do atendente</p>
-                
                 <form id="transcriptionForm">
                     <div class="form-group">
                         <label for="data">Data da Ligação:</label>
@@ -39,14 +64,12 @@
                     </button>
                 </form>
             </div>
-
             <div id="resultArea" style="display: none;">
                 <div class="result-card">
                     <h3>Resultado da Transcrição</h3>
                     <div id="resultContent"></div>
                 </div>
             </div>
-
         </main>
     </div>
 

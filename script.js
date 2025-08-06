@@ -1,8 +1,83 @@
-document.addEventListener('DOMContentLoaded', function() {
+// =================================================================
+// --- CONFIGURAÇÕES GLOBAIS ---
+// =================================================================
 
-    // URL relativa para o backend, já que frontend e backend estão no mesmo domínio na Vercel
-    const backendApiEndpoint = '/api';
+// URL relativa para o backend no mesmo domínio (Vercel)
+const backendApiEndpoint = '/api';
 
+// ---> PASSO IMPORTANTE <---
+// Cole aqui o ID do Cliente que você criou na Google Cloud Platform.
+const GOOGLE_CLIENT_ID = 'COLE_O_SEU_CLIENT_ID_AQUI.apps.googleusercontent.com';
+
+
+// =================================================================
+// --- LÓGICA DE LOGIN COM GOOGLE ---
+// =================================================================
+
+/**
+ * Esta função é chamada automaticamente pela biblioteca do Google
+ * após o utilizador fazer o login com sucesso na janela popup.
+ * @param {object} response - Contém o token de credencial do utilizador.
+ */
+async function handleCredentialResponse(response) {
+    const loginError = document.getElementById('login-error-message');
+    loginError.style.display = 'none';
+
+    // response.credential é um token JWT que contém as informações do utilizador
+    const idToken = response.credential;
+    
+    // Decodificamos o token para obter o e-mail (isto é seguro de se fazer no frontend)
+    const decodedToken = JSON.parse(atob(idToken.split('.')[1]));
+    const userEmail = decodedToken.email;
+    
+    // Verificamos se o e-mail tem permissão no nosso backend
+    const isAuthorized = await verifyEmailOnBackend(userEmail);
+    
+    if (isAuthorized) {
+        // Se autorizado, esconde a tela de login e mostra a aplicação
+        document.getElementById('login-overlay').style.display = 'none';
+        document.querySelector('.app-container').style.display = 'block';
+        initializeApp(); // Chama a função que "liga" a nossa aplicação principal
+    } else {
+        // Se não for autorizado, mostra uma mensagem de erro
+        loginError.textContent = 'Acesso negado. O seu e-mail não tem permissão para usar esta aplicação.';
+        loginError.style.display = 'block';
+    }
+}
+
+/**
+ * Envia o e-mail do utilizador para o nosso backend para verificar se ele está na lista
+ * de permissões na Planilha Google.
+ * @param {string} email - O e-mail do utilizador que fez login.
+ * @returns {boolean} - Retorna true se autorizado, false caso contrário.
+ */
+async function verifyEmailOnBackend(email) {
+    try {
+        const response = await fetch(backendApiEndpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'checkAuth', // A nova ação que criámos no backend
+                email: email
+            })
+        });
+        const result = await response.json();
+        return result.authorized;
+    } catch (error) {
+        console.error("Erro ao verificar e-mail:", error);
+        const loginError = document.getElementById('login-error-message');
+        loginError.textContent = 'Erro de comunicação com o servidor ao verificar permissão.';
+        loginError.style.display = 'block';
+        return false;
+    }
+}
+
+
+// =================================================================
+// --- INICIALIZAÇÃO DA APLICAÇÃO PRINCIPAL (SÓ CORRE APÓS LOGIN) ---
+// =================================================================
+
+function initializeApp() {
     // Mapeamento dos elementos da página
     const form = document.getElementById('transcriptionForm');
     const submitBtn = document.getElementById('submitBtn');
@@ -17,12 +92,12 @@ document.addEventListener('DOMContentLoaded', function() {
         setLoading(true);
         
         const requestPayload = {
+            action: 'transcribe', // Define a ação para o backend
             data: document.getElementById('data').value,
             nomeCompleto: document.getElementById('nomeCompleto').value
         };
 
         try {
-            // Usa o endpoint principal (api/index.js)
             const response = await fetch(backendApiEndpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -45,10 +120,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // --- NOVO CÓDIGO PARA O ÁUDIO ---
-    // Escuta por cliques em todo o documento para apanhar o clique no botão de áudio
+    // Lógica para o botão de áudio
     document.body.addEventListener('click', async function(e) {
-        // Verifica se o elemento clicado é o nosso botão de áudio
         if (e.target && e.target.classList.contains('audio-btn')) {
             const button = e.target;
             const audioUrl = button.dataset.audioUrl;
@@ -59,22 +132,18 @@ document.addEventListener('DOMContentLoaded', function() {
             button.disabled = true;
 
             try {
-                // Pede o áudio ao nosso backend proxy (api/getAudio.js)
                 const response = await fetch(`${backendApiEndpoint}/getAudio?audioUrl=${encodeURIComponent(audioUrl)}`);
 
                 if (!response.ok) {
                     throw new Error('Falha ao obter o áudio do nosso backend.');
                 }
 
-                // Converte a resposta em um "blob" (um ficheiro em memória)
                 const audioBlob = await response.blob();
-                // Cria uma URL local para este ficheiro
                 const objectUrl = URL.createObjectURL(audioBlob);
 
-                // Configura e toca o áudio
                 audioPlayer.src = objectUrl;
-                button.style.display = 'none'; // Esconde o botão
-                audioPlayer.style.display = 'block'; // Mostra o leitor de áudio
+                button.style.display = 'none';
+                audioPlayer.style.display = 'block';
                 audioPlayer.play();
 
             } catch (error) {
@@ -85,8 +154,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-    // --- FIM DO NOVO CÓDIGO PARA O ÁUDIO ---
-
 
     // Funções Auxiliares
     function setLoading(isLoading) {
@@ -105,7 +172,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 <p><strong>Hora:</strong> ${details.hora || 'N/A'}</p>
                 <p><strong>Fonte:</strong> ${details.fonte || 'N/A'}</p>
             </div>
-
             <div class="result-item">
                 <h4>🎵 Áudio da Ligação</h4>
                 <div id="audio-container">
@@ -132,5 +198,26 @@ document.addEventListener('DOMContentLoaded', function() {
         resultContent.innerHTML = `<div class="error"><strong>Erro:</strong> ${message}</div>`;
         resultArea.style.display = 'block';
         resultArea.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+
+// =================================================================
+// --- PONTO DE ENTRADA PRINCIPAL ---
+// =================================================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Configura o Client ID para o botão do Google assim que a página carrega
+    const googleOnloadDiv = document.getElementById('g_id_onload');
+    if (googleOnloadDiv) {
+        if (GOOGLE_CLIENT_ID.includes('COLE_O_SEU_CLIENT_ID_AQUI')) {
+            const loginError = document.getElementById('login-error-message');
+            loginError.textContent = 'ERRO DE CONFIGURAÇÃO: O Client ID do Google não foi definido no script.js.';
+            loginError.style.display = 'block';
+        } else {
+            googleOnloadDiv.setAttribute('data-client_id', GOOGLE_CLIENT_ID);
+        }
+    } else {
+        console.error("Elemento 'g_id_onload' não encontrado. Verifique o seu HTML.");
     }
 });
