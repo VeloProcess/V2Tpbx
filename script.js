@@ -1,9 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    // ---> PASSO MAIS IMPORTANTE <---
-    // Substitua a URL abaixo pela URL do seu backend na Vercel.
-    // Não se esqueça de adicionar /api no final!
-    const backendUrl = '/api';
+    // URL relativa para o backend, já que frontend e backend estão no mesmo domínio na Vercel
+    const backendApiEndpoint = '/api';
 
     // Mapeamento dos elementos da página
     const form = document.getElementById('transcriptionForm');
@@ -13,15 +11,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const resultArea = document.getElementById('resultArea');
     const resultContent = document.getElementById('resultContent');
 
-    // Evento de Envio do Formulário
+    // Evento de Envio do Formulário de Transcrição
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
-
-        if (backendUrl.includes('SUA_URL_DA_VERCEL_AQUI')) {
-            showError('A URL do backend não foi configurada no arquivo script.js. Por favor, edite o arquivo e insira a sua URL da Vercel.');
-            return;
-        }
-
         setLoading(true);
         
         const requestPayload = {
@@ -30,11 +22,10 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         try {
-            const response = await fetch(backendUrl, {
+            // Usa o endpoint principal (api/index.js)
+            const response = await fetch(backendApiEndpoint, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(requestPayload)
             });
             
@@ -47,12 +38,55 @@ document.addEventListener('DOMContentLoaded', function() {
             showResults(result);
 
         } catch (error) {
-            console.error('Erro no Fetch:', error);
-            showError(`Erro de comunicação com o backend. Verifique a URL e a sua conexão. Detalhes: ${error.message}`);
+            console.error('Erro no Fetch da transcrição:', error);
+            showError(`Erro de comunicação com o backend. Detalhes: ${error.message}`);
         } finally {
             setLoading(false);
         }
     });
+
+    // --- NOVO CÓDIGO PARA O ÁUDIO ---
+    // Escuta por cliques em todo o documento para apanhar o clique no botão de áudio
+    document.body.addEventListener('click', async function(e) {
+        // Verifica se o elemento clicado é o nosso botão de áudio
+        if (e.target && e.target.classList.contains('audio-btn')) {
+            const button = e.target;
+            const audioUrl = button.dataset.audioUrl;
+            const audioPlayer = document.getElementById('audio-player');
+            const audioContainer = document.getElementById('audio-container');
+
+            button.textContent = 'A carregar áudio...';
+            button.disabled = true;
+
+            try {
+                // Pede o áudio ao nosso backend proxy (api/getAudio.js)
+                const response = await fetch(`${backendApiEndpoint}/getAudio?audioUrl=${encodeURIComponent(audioUrl)}`);
+
+                if (!response.ok) {
+                    throw new Error('Falha ao obter o áudio do nosso backend.');
+                }
+
+                // Converte a resposta em um "blob" (um ficheiro em memória)
+                const audioBlob = await response.blob();
+                // Cria uma URL local para este ficheiro
+                const objectUrl = URL.createObjectURL(audioBlob);
+
+                // Configura e toca o áudio
+                audioPlayer.src = objectUrl;
+                button.style.display = 'none'; // Esconde o botão
+                audioPlayer.style.display = 'block'; // Mostra o leitor de áudio
+                audioPlayer.play();
+
+            } catch (error) {
+                console.error("Erro ao carregar áudio:", error);
+                if (audioContainer) {
+                    audioContainer.innerHTML = `<div class="error">Falha ao carregar o áudio.</div>`;
+                }
+            }
+        }
+    });
+    // --- FIM DO NOVO CÓDIGO PARA O ÁUDIO ---
+
 
     // Funções Auxiliares
     function setLoading(isLoading) {
@@ -71,9 +105,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 <p><strong>Hora:</strong> ${details.hora || 'N/A'}</p>
                 <p><strong>Fonte:</strong> ${details.fonte || 'N/A'}</p>
             </div>
+
             <div class="result-item">
                 <h4>🎵 Áudio da Ligação</h4>
-                <p><a href="${details.linkAudio}" target="_blank" style="color: #667eea; text-decoration: none;">Clique aqui para ouvir o áudio original</a></p>
+                <div id="audio-container">
+                    <button class="btn-primary audio-btn" data-audio-url="${details.linkAudio}">Carregar e Ouvir Áudio</button>
+                    <audio id="audio-player" controls style="display: none; width: 100%; margin-top: 10px;"></audio>
+                </div>
             </div>
             <div class="result-item">
                 <h4>📝 Transcrição Completa</h4>
