@@ -1,17 +1,17 @@
 /* ========================================
-   CONFIGURAÇÕES GLOBAIS E VARIÁVEIS DE COR
+   CONFIGURAÇÕES GLOBAIS E NOVA PALETA DE CORES (TEMA CLARO)
    ======================================== */
 :root {
-    --background-dark: #04045c;
-    --surface-color: #0a0a75;
-    --primary-action: #0346ff;
-    --primary-hover: #0000ff;
-    --text-primary: #ffffff;
-    --text-secondary: #c3c3e6;
-    --text-muted: #5e5e5e;
-    --border-color: #2a2a8c;
+    --background-light: #eaecee; /* O seu cinza claro como base */
+    --surface-color: #ffffff;    /* Branco puro para os cards */
+    --primary-action: #0346ff;   /* O seu azul vibrante para ações */
+    --primary-hover: #0000ff;    /* O seu azul mais vivo para hover */
+    --text-primary: #04045c;     /* O seu azul escuro para texto principal */
+    --text-secondary: #5e5e5e;  /* O seu cinza para texto secundário */
+    --border-color: #d1d5db;     /* Um cinza bem claro para bordas subtis */
     --font-family: 'Inter', sans-serif;
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07);
     --border-radius: 0.75rem;
 }
 
@@ -23,7 +23,7 @@
 
 body {
     font-family: var(--font-family);
-    background-color: var(--background-dark);
+    background-color: var(--background-light);
     color: var(--text-primary);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
@@ -35,19 +35,28 @@ body {
    ======================================== */
 .overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background-color: var(--background-dark);
+    background-color: var(--background-light);
     display: flex; align-items: center; justify-content: center; padding: 1rem;
 }
 
-.login-card { text-align: center; max-width: 400px; width: 100%; }
+.login-card {
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+}
 
 .logo {
-    background: linear-gradient(135deg, var(--primary-action), var(--primary-hover));
-    color: white; font-size: 1.5rem; font-weight: 700;
-    width: 60px; height: 60px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
+    background: var(--text-primary);
+    color: var(--surface-color);
+    font-size: 1.5rem;
+    font-weight: 700;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin: 0 auto 1.5rem auto;
-    box-shadow: 0 0 25px color-mix(in srgb, var(--primary-action) 30%, transparent);
 }
 
 #login-error-message { margin-top: 20px; text-align: center; }
@@ -62,13 +71,20 @@ body {
     padding: 1rem 2rem;
     display: flex; justify-content: space-between; align-items: center;
     border-bottom: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
 }
 
 .logo-header {
-    background: linear-gradient(135deg, var(--primary-action), var(--primary-hover));
-    color: white; font-size: 1rem; font-weight: 600;
-    width: 40px; height: 40px; border-radius: 0.5rem;
-    display: flex; align-items: center; justify-content: center;
+    background: var(--text-primary);
+    color: var(--surface-color);
+    font-size: 1rem;
+    font-weight: 600;
+    width: 40px;
+    height: 40px;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .user-info { display: flex; align-items: center; gap: 1rem; }
@@ -76,7 +92,7 @@ body {
 
 .container { max-width: 800px; width: 100%; margin: 0 auto; padding: 2rem; flex-grow: 1; }
 
-.app-footer { text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: 0.875rem; }
+.app-footer { text-align: center; padding: 1.5rem; color: var(--text-secondary); font-size: 0.875rem; }
 
 /* ========================================
    COMPONENTES (CARDS, FORMULÁRIOS, BOTÕES)
@@ -85,7 +101,6 @@ body {
     background-color: var(--surface-color);
     border-radius: var(--border-radius);
     padding: 2.5rem;
-    border: 1px solid var(--border-color);
     box-shadow: var(--shadow-lg);
 }
 
@@ -94,16 +109,16 @@ body {
 
 .form-row { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; }
 .form-group { flex: 1; display: flex; flex-direction: column; }
-.form-group label { margin-bottom: 0.5rem; font-weight: 500; color: var(--text-secondary); font-size: 0.875rem; }
+.form-group label { margin-bottom: 0.5rem; font-weight: 500; color: var(--text-primary); font-size: 0.875rem; }
 
 .form-group input {
     width: 100%; padding: 0.75rem 1rem;
     border: 1px solid var(--border-color);
     border-radius: 0.5rem; font-size: 1rem;
     transition: all 0.2s ease-in-out;
-    background-color: var(--background-dark); color: var(--text-primary);
+    background-color: var(--surface-color); color: var(--text-primary);
 }
-.form-group input::placeholder { color: var(--text-muted); }
+.form-group input::placeholder { color: var(--text-secondary); opacity: 0.7; }
 .form-group input:focus {
     outline: none; border-color: var(--primary-action);
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-action) 20%, transparent);
@@ -115,18 +130,18 @@ body {
     transition: all 0.2s ease-in-out;
     display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
 }
-.btn-primary { background-color: var(--primary-action); color: var(--text-primary); width: 100%; }
+.btn-primary { background-color: var(--primary-action); color: #ffffff; width: 100%; }
 .btn-primary:hover {
     background-color: var(--primary-hover);
     transform: translateY(-2px);
-    box-shadow: 0 0 20px color-mix(in srgb, var(--primary-hover) 25%, transparent);
+    box-shadow: var(--shadow-md);
 }
-.btn-secondary { background-color: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); }
-.btn-secondary:hover { background-color: var(--border-color); color: var(--text-primary); }
+.btn-secondary { background-color: var(--surface-color); color: var(--text-secondary); border: 1px solid var(--border-color); }
+.btn-secondary:hover { background-color: var(--background-light); color: var(--text-primary); }
 
 .loading-spinner {
     width: 20px; height: 20px; border: 2px solid #ffffff4d;
-    border-radius: 50%; border-top-color: var(--text-primary);
+    border-radius: 50%; border-top-color: #ffffff;
     animation: spin 1s ease-in-out infinite; display: none;
 }
 .btn-primary.loading .loading-spinner { display: block; }
@@ -136,27 +151,27 @@ body {
 /* ========================================
    ÁREA DE RESULTADOS
    ======================================== */
-.result-card { border: 1px solid var(--border-color); margin-top: 2rem; }
+.result-card { border: none; margin-top: 2rem; }
 .result-card h3 {
     font-size: 1.5rem; font-weight: 600; margin-bottom: 1.5rem;
     padding-bottom: 1rem; border-bottom: 1px solid var(--border-color);
 }
 
-.result-item { margin-bottom: 1.5rem; }
+.result-item { margin-bottom: 1.5rem; padding: 1.5rem; border-radius: var(--border-radius); background-color: var(--background-light); }
 .result-item:last-child { margin-bottom: 0; }
-.result-item h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+.result-item h4 { color: var(--text-primary); font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
 .result-item p { color: var(--text-secondary); }
 
 .transcription-text, .summary-text {
-    padding: 1rem; border-radius: 0.5rem; background-color: var(--background-dark);
+    padding: 1rem; border-radius: 0.5rem; background-color: var(--surface-color);
     border: 1px solid var(--border-color); white-space: pre-wrap;
-    font-size: 0.95rem; line-height: 1.7; color: var(--text-secondary);
+    font-size: 0.95rem; line-height: 1.7; color: var(--text-primary);
 }
 
 .error {
-    background-color: #441a1a; color: #fecaca;
+    background-color: #fee2e2; color: #b91c1c;
     padding: 1rem; border-radius: 0.5rem;
-    border: 1px solid #991b1b;
+    border: 1px solid #fecaca; text-align: center;
 }
 
 .fade-in { animation: fadeIn 0.5s ease-in-out; }
