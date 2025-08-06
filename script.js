@@ -171,7 +171,7 @@ function initializeApp() {
 document.addEventListener('DOMContentLoaded', () => {
     const googleOnloadDiv = document.getElementById('g_id_onload');
     if (googleOnloadDiv) {
-        if (GOOGLE_CLIENT_ID.includes('COLE_O_SEU_CLIENT_ID_AQUI')) {
+        if (GOOGLE_CLIENT_ID.includes('827325386401-ihcn9c4j2nntknpv65io2snt51oj2bpe.apps.googleusercontent.com')) {
             const loginError = document.getElementById('login-error-message');
             loginError.textContent = 'ERRO DE CONFIGURAÇÃO: O Client ID do Google não foi definido no script.js.';
             loginError.style.display = 'block';
