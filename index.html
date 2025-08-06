@@ -21,6 +21,7 @@
             <p class="subtitle">Por favor, identifique-se com a sua conta Google autorizada.</p>
             
             <div id="g_id_onload"
+                 data-client_id="827325386401-ihcn9c4j2nntknpv65io2snt51oj2bpe.apps.googleusercontent.com"
                  data-callback="handleCredentialResponse"
                  data-auto_prompt="false">
             </div>
@@ -40,7 +41,6 @@
     <div class="app-wrapper" style="display: none;">
         <header class="app-header">
             <div class="logo-header">V2T</div>
-            <p> V.1.0</p>
             <div class="user-info">
                 <span id="user-name"></span>
                 <button id="logout-button" class="btn-secondary">Sair</button>
@@ -51,7 +51,6 @@
             <div class="card main-card">
                 <h2>Consultar Transcrição de Ligação</h2>
                 <p class="subtitle">Insira a data e o nome do atendente para buscar a gravação e gerar o resumo.</p>
-                
                 <form id="transcriptionForm">
                     <div class="form-row">
                         <div class="form-group">
@@ -63,14 +62,12 @@
                             <input type="text" id="nomeCompleto" name="nomeCompleto" placeholder="Nome completo" required>
                         </div>
                     </div>
-
                     <button type="submit" class="btn-primary" id="submitBtn">
                         <span class="btn-text">Analisar Ligação</span>
                         <div class="loading-spinner"></div>
                     </button>
                 </form>
             </div>
-            
             <div id="resultArea" style="display: none;">
                 <div class="result-card fade-in">
                     <h3>Resultado da Análise</h3>
@@ -83,7 +80,7 @@
             <p>&copy; 2025 Plataforma V2T. Todos os direitos reservados.</p>
         </footer>
     </div>
-
+    
     <script src="script.js"></script>
 </body>
 </html>
