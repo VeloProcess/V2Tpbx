@@ -10,6 +10,11 @@ const GOOGLE_CLIENT_ID = '827325386401-ihcn9c4j2nntknpv65io2snt51oj2bpe.apps.goo
 // =================================================================
 // --- LÓGICA DE LOGIN COM GOOGLE ---
 // =================================================================
+
+/**
+ * Esta função é chamada automaticamente pela biblioteca do Google
+ * após o utilizador fazer o login com sucesso na janela popup.
+ */
 async function handleCredentialResponse(response) {
     const loginError = document.getElementById('login-error-message');
     loginError.style.display = 'none';
@@ -25,13 +30,17 @@ async function handleCredentialResponse(response) {
         document.getElementById('user-name').textContent = userName;
         document.getElementById('login-overlay').style.display = 'none';
         document.querySelector('.app-wrapper').style.display = 'flex';
-        initializeApp();
+        initializeApp(); // Chama a função que "liga" a nossa aplicação principal
     } else {
         loginError.textContent = 'Acesso negado. O seu e-mail não tem permissão.';
         loginError.style.display = 'block';
     }
 }
 
+/**
+ * Envia o e-mail do utilizador para o nosso backend para verificar se ele está na lista
+ * de permissões na Planilha Google.
+ */
 async function verifyEmailOnBackend(email) {
     try {
         const response = await fetch(backendApiEndpoint, {
@@ -49,15 +58,19 @@ async function verifyEmailOnBackend(email) {
     }
 }
 
+
 // =================================================================
 // --- INICIALIZAÇÃO DA APLICAÇÃO PRINCIPAL (SÓ CORRE APÓS LOGIN) ---
 // =================================================================
+
 function initializeApp() {
+    // Mapeamento dos elementos da página
     const form = document.getElementById('transcriptionForm');
     const submitBtn = document.getElementById('submitBtn');
     const resultArea = document.getElementById('resultArea');
     const resultContent = document.getElementById('resultContent');
 
+    // Evento de Envio do Formulário de Transcrição
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         setLoading(true);
@@ -85,6 +98,7 @@ function initializeApp() {
         }
     });
 
+    // Lógica para o botão de áudio
     document.body.addEventListener('click', async function(e) {
         if (e.target && e.target.classList.contains('audio-btn')) {
             const button = e.target;
@@ -113,6 +127,7 @@ function initializeApp() {
         }
     });
     
+    // Lógica para o botão de Logout
     const logoutButton = document.getElementById('logout-button');
     logoutButton.addEventListener('click', () => {
         localStorage.removeItem('loggedInUser');
@@ -120,6 +135,7 @@ function initializeApp() {
         location.reload();
     });
 
+    // Funções Auxiliares
     function setLoading(isLoading) {
         submitBtn.disabled = isLoading;
         if (isLoading) {
@@ -168,14 +184,19 @@ function initializeApp() {
 // =================================================================
 // --- PONTO DE ENTRADA PRINCIPAL ---
 // =================================================================
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Configura o Client ID para o botão do Google assim que a página carrega
     const googleOnloadDiv = document.getElementById('g_id_onload');
     if (googleOnloadDiv) {
-        if (GOOGLE_CLIENT_ID.includes('827325386401-ihcn9c4j2nntknpv65io2snt51oj2bpe.apps.googleusercontent.com')) {
+        // ---- LÓGICA CORRIGIDA AQUI ----
+        // Verifica se a constante ainda tem o texto do placeholder
+        if (GOOGLE_CLIENT_ID.includes('COLE_O_SEU_CLIENT_ID_AQUI')) {
             const loginError = document.getElementById('login-error-message');
             loginError.textContent = 'ERRO DE CONFIGURAÇÃO: O Client ID do Google não foi definido no script.js.';
             loginError.style.display = 'block';
         } else {
+            // Se estiver preenchido, adiciona o atributo ao div para o Google ler
             googleOnloadDiv.setAttribute('data-client_id', GOOGLE_CLIENT_ID);
         }
     }
