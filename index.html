@@ -3,74 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Transcrição 55PBX</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Plataforma de Transcrição | V2T</title>
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
-    
-    <div id="login-overlay">
-        <div class="card login-card">
-            <h1>Acesso ao Sistema de Transcrição</h1>
+
+    <div id="login-overlay" class="overlay">
+        <div class="card login-card fade-in">
+            <div class="logo">V2T</div>
+            <h1>Acesso à Plataforma</h1>
             <p class="subtitle">Por favor, identifique-se com a sua conta Google autorizada.</p>
             
             <div id="g_id_onload"
-                 data-client_id="827325386401-ihcn9c4j2nntknpv65io2snt51oj2bpe.apps.googleusercontent.com"
                  data-callback="handleCredentialResponse"
                  data-auto_prompt="false">
             </div>
             <div class="g_id_signin"
                  data-type="standard"
                  data-size="large"
-                 data-theme="outline"
-                 data-text="sign_in_with"
+                 data-theme="filled_blue"
+                 data-text="continue_with"
                  data-shape="rectangular"
                  data-logo_alignment="left">
             </div>
 
-            <p id="login-error-message" class="error" style="display: none; margin-top: 20px; text-align: center;"></p>
+            <p id="login-error-message" class="error" style="display: none;"></p>
         </div>
     </div>
 
-    <div class="container app-container" style="display: none;">
-        <header>
-            <h1>Sistema de Transcrição 55PBX</h1>
-            <p>Busca automática na planilha e transcrição de áudio</p>
-            <div class="powered-by">Powered by Vercel & Google Cloud</div>
+    <div class="app-wrapper" style="display: none;">
+        <header class="app-header">
+            <div class="logo-header">V2T</div>
+            <div class="user-info">
+                <span id="user-name"></span>
+                <button id="logout-button" class="btn-secondary">Sair</button>
+            </div>
         </header>
 
-        <main>
-            <div class="card">
-                <h2>Consultar Transcrição</h2>
-                <p class="subtitle">Insira a data e o nome do atendente</p>
+        <main class="container">
+            <div class="card main-card">
+                <h2>Consultar Transcrição de Ligação</h2>
+                <p class="subtitle">Insira a data e o nome do atendente para buscar a gravação e gerar o resumo.</p>
+                
                 <form id="transcriptionForm">
-                    <div class="form-group">
-                        <label for="data">Data da Ligação:</label>
-                        <input type="date" id="data" name="data" required>
-                        <small>Data em que a ligação foi realizada</small>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="nomeCompleto">Nome Completo do Atendente:</label>
-                        <input type="text" id="nomeCompleto" name="nomeCompleto" 
-                               placeholder="Digite o nome completo do atendente" required>
-                        <small>Nome exato conforme registrado na planilha</small>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="data">Data da Ligação</label>
+                            <input type="date" id="data" name="data" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="nomeCompleto">Nome do Atendente</label>
+                            <input type="text" id="nomeCompleto" name="nomeCompleto" placeholder="Nome completo" required>
+                        </div>
                     </div>
 
                     <button type="submit" class="btn-primary" id="submitBtn">
-                        <span class="btn-text">Buscar e Transcrever</span>
-                        <div class="loading-spinner" style="display: none;"></div>
+                        <span class="btn-text">Analisar Ligação</span>
+                        <div class="loading-spinner"></div>
                     </button>
                 </form>
             </div>
+            
             <div id="resultArea" style="display: none;">
-                <div class="result-card">
-                    <h3>Resultado da Transcrição</h3>
+                <div class="result-card fade-in">
+                    <h3>Resultado da Análise</h3>
                     <div id="resultContent"></div>
                 </div>
             </div>
         </main>
+
+        <footer class="app-footer">
+            <p>&copy; 2025 Plataforma V2T. Todos os direitos reservados.</p>
+        </footer>
     </div>
 
     <script src="script.js"></script>
