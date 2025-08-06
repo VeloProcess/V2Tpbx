@@ -1,0 +1,12 @@
+{
+  "name": "backend-final-vercel",
+  "version": "1.0.0",
+  "description": "Backend para transcrição 55PBX na Vercel",
+  "main": "api/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "googleapis": "^140.0.1"
+  }
+}

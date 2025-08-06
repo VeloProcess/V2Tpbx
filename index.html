@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Transcrição 55PBX</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sistema de Transcrição 55PBX</h1>
+            <p>Busca automática na planilha e transcrição de áudio</p>
+            <div class="powered-by">Powered by Vercel & Google Cloud</div>
+        </header>
+
+        <main>
+            <div class="card">
+                <h2>Consultar Transcrição</h2>
+                <p class="subtitle">Insira a data e o nome do atendente</p>
+                
+                <form id="transcriptionForm">
+                    <div class="form-group">
+                        <label for="data">Data da Ligação:</label>
+                        <input type="date" id="data" name="data" required>
+                        <small>Data em que a ligação foi realizada</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nomeCompleto">Nome Completo do Atendente:</label>
+                        <input type="text" id="nomeCompleto" name="nomeCompleto" 
+                               placeholder="Digite o nome completo do atendente" required>
+                        <small>Nome exato conforme registrado na planilha</small>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="submitBtn">
+                        <span class="btn-text">Buscar e Transcrever</span>
+                        <div class="loading-spinner" style="display: none;"></div>
+                    </button>
+                </form>
+            </div>
+
+            <div id="resultArea" style="display: none;">
+                <div class="result-card">
+                    <h3>Resultado da Transcrição</h3>
+                    <div id="resultContent"></div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
